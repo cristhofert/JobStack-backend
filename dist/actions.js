@@ -788,7 +788,7 @@ var getOferta = function (req, res) { return __awaiter(void 0, void 0, void 0, f
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, typeorm_1.getRepository(Oferta_1.Oferta).findOne({
-                    relations: ["cualificaciones", "condiciones", "habilidades", "responsabilidades"],
+                    relations: ["cualificaciones", "condiciones", "habilidades", "responsabilidades", "aplicantes"],
                     where: { id: req.params.id }
                 })];
             case 1:
@@ -826,7 +826,9 @@ var getOfertas = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 empresa = _a.sent();
                 if (!empresa)
                     throw new utils_1.Exception("no existe la empresa");
-                ofertas = empresa.ofertas;
+                return [4 /*yield*/, typeorm_1.getRepository(Oferta_1.Oferta).find({ relations: ["aplicantes"], where: { empresa: empresa } })];
+            case 2:
+                ofertas = _a.sent();
                 return [2 /*return*/, res.json(ofertas)];
         }
     });

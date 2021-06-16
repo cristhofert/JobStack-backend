@@ -445,7 +445,7 @@ export const crearOferta = async (req: Request, res: Response): Promise<Response
 
 export const getOferta = async (req: Request, res: Response): Promise<Response> => {
     const oferta = await getRepository(Oferta).findOne({
-        relations: ["cualificaciones", "condiciones", "habilidades", "responsabilidades"],
+        relations: ["cualificaciones", "condiciones", "habilidades", "responsabilidades", "aplicantes"],
         where: { id: req.params.id }
     })
     return res.json(oferta);
@@ -464,9 +464,10 @@ export const buscar = async (req: Request, res: Response): Promise<Response> => 
 export const getOfertas = async (req: Request, res: Response): Promise<Response> => {
 
     const token = req.user as IToken
-    const empresa = await getRepository(Empresa).findOne({ relations: ["ofertas"], where: { email: token.user.email } })
+    const empresa = await getRepository(Empresa).findOne({ relations: ["ofertas"], where: { email: token.user.email } });
     if (!empresa) throw new Exception("no existe la empresa");
-    const ofertas = empresa.ofertas;
+    const ofertas = await getRepository(Oferta).find({relations: ["aplicantes"], where: {empresa: empresa}})
+
     return res.json(ofertas);
 }
 
